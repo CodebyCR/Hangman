@@ -1,4 +1,6 @@
-mod model::HangmanGame::*;
+mod model {
+    pub mod HangmanGame;
+}
 
 enum Language {
     German,
