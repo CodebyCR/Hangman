@@ -1,3 +1,5 @@
+use crate::Language;
+
 pub struct HangmanGame {
     word_list_german: Vec<&'static str>,
     word_list_english: Vec<&'static str>,
@@ -66,7 +68,7 @@ impl HangmanGame {
                 return;
             }
 
-            println!("Lives: {self.lives}", self.lives);
+            println!("Lives: {}", self.lives);
 
             let guessed_letter = self.get_guess();
 
@@ -80,7 +82,7 @@ impl HangmanGame {
         }
 
         println!(
-            "Game over! The word was: {self.current_word}",
+            "Game over! The word was: {}",
             self.current_word
         );
     }
