@@ -1,9 +1,8 @@
-use crate::Language;
+
+use crate::language::Language;
 
 pub struct HangmanGame {
-    word_list_german: Vec<&'static str>,
-    word_list_english: Vec<&'static str>,
-    difficulty: u8,
+    pub(crate)
     language: Language,
     lives: u8,
     current_word: String,
@@ -11,50 +10,19 @@ pub struct HangmanGame {
 }
 
 impl HangmanGame {
-    pub fn new(difficulty: u8, language: Language) -> Self {
-        let word_list_german = vec![
-            // Liste der deutschen Wörter hier einfügen
-        ];
-
-        let word_list_english = vec![
-            // Liste der englischen Wörter hier einfügen
-        ];
-
+    pub fn new(language: Language) -> Self {
         HangmanGame {
-            word_list_german,
-            word_list_english,
-            difficulty,
             language,
             lives: 3,
-            current_word: String::new(),
+            current_word: language.get_random_word(),
             guessed_letters: Vec::new(),
         }
     }
 
-    fn start_game(&mut self) {
-        self.choose_word();
+    pub(crate) fn start_game(&mut self) {
         self.play_game();
     }
 
-    fn choose_word(&mut self) {
-        let word_list = match self.language {
-            Language::German => &self.word_list_german,
-            Language::English => &self.word_list_english,
-        };
-
-        let filtered_words: Vec<&str> = word_list
-            .iter()
-            .filter(|&&word| word.len() >= self.difficulty as usize)
-            .copied()
-            .collect();
-
-        let random_word = filtered_words.choose(&mut rand::thread_rng());
-
-        self.current_word = match random_word {
-            Some(&word) => word.to_string(),
-            None => String::new(),
-        };
-    }
 
     fn play_game(&mut self) {
         let mut correct_guesses = Vec::new();
