@@ -1,16 +1,16 @@
+mod language;
+
 use std::io;
 use std::io::Read;
-use crate::model::hangman_game;
+use crate::language::Language;
+use crate::model::hangman_game::HangmanGame;
 
 mod model {
     pub mod hangman_game;
 }
 
 
-enum Language {
-    German,
-    English,
-}
+
 
 fn get_difficulty() -> u8 {
     let mut difficulty = String::new();
@@ -27,21 +27,29 @@ fn get_difficulty() -> u8 {
     difficulty
 }
 
-fn main() {
+fn get_main_menu() -> Language {
     let mut buffer = [0u8; 1];
-
     io::stdin().read_exact(&mut buffer).unwrap();
-
     let taste = buffer[0] as char;
     println!("Welcome to Hangwoman!{taste}");
-
+    // chose language and save in config file
     println!("Please choose a difficulty:");
     println!("1 - Easy");
     println!("2 - Medium");
     println!("3 - Hard");
-
     let difficulty = get_difficulty();
 
-    let mut game = hangman_game::new(difficulty, Language::English);
-    game.start_game();
+    return Language::English{difficulty};
+}
+
+fn main() {
+
+    loop {
+        let language: Language = get_main_menu();
+
+        let mut game: HangmanGame = HangmanGame::new( language);
+
+        // TODO: implement Win/Lose
+        game.start_game();
+    }
 }
