@@ -1,6 +1,11 @@
+use std::io;
+use std::io::Read;
+use crate::model::hangman_game;
+
 mod model {
-    pub mod HangmanGame;
+    pub mod hangman_game;
 }
+
 
 enum Language {
     German,
@@ -15,7 +20,7 @@ fn get_difficulty() -> u8 {
     let difficulty: u8 = match difficulty.trim().parse() {
         Ok(num) => num,
         Err(_) => {
-            println!("Please enter a number!");
+            println!("Please enter the difficult level!");
             get_difficulty()
         }
     };
@@ -23,12 +28,10 @@ fn get_difficulty() -> u8 {
 }
 
 fn main() {
-    let mut buffer = [0u8; 1]; // Puffer mit einer Bytegröße erstellen
+    let mut buffer = [0u8; 1];
 
-    // Auf die Eingabe einer Taste warten
     io::stdin().read_exact(&mut buffer).unwrap();
 
-    // Puffer auswerten
     let taste = buffer[0] as char;
     println!("Welcome to Hangwoman!{taste}");
 
@@ -39,6 +42,6 @@ fn main() {
 
     let difficulty = get_difficulty();
 
-    let mut game = HangmanGame::new(3, Language::English);
+    let mut game = hangman_game::new(difficulty, Language::English);
     game.start_game();
 }
