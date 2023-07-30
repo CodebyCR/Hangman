@@ -15,7 +15,7 @@ impl Language {
 
     fn get_english_word_list() -> Vec<&'static str> {
         vec![
-            "House", "Roof", "Institution", "Homework", "Pencil", "Computer", "Mega_awesome_word",
+            "House", "Roof", "Institution", "Homework", "Pencil", "Computer", "MegaAwesomeWord",
         ]
     }
 
