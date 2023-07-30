@@ -7,15 +7,19 @@ pub struct HangmanGame {
     lives: u8,
     current_word: String,
     guessed_letters: Vec<char>,
+    correct_guesses: Vec<char>,
+    wrong_guesses: Vec<char>,
 }
 
 impl HangmanGame {
     pub fn new(language: Language) -> Self {
         HangmanGame {
             language,
-            lives: 3,
+            lives: 10,
             current_word: language.get_random_word(),
             guessed_letters: Vec::new(),
+            correct_guesses: Vec::new(),
+            wrong_guesses: Vec::new(),
         }
     }
 
@@ -25,13 +29,13 @@ impl HangmanGame {
 
 
     fn play_game(&mut self) {
-        let mut correct_guesses = Vec::new();
-        let mut wrong_guesses = Vec::new();
+
 
         while self.lives > 0 {
             self.display_word();
+            self.print_guessed_letters();
 
-            if !self.current_word.contains('_') {
+            if self.word_is_guessed() {
                 println!("Congratulations! You guessed the word!");
                 return;
             }
@@ -40,10 +44,11 @@ impl HangmanGame {
 
             let guessed_letter = self.get_guess();
 
-            if self.current_word.contains(guessed_letter) {
-                correct_guesses.push(guessed_letter);
-            } else {
-                wrong_guesses.push(guessed_letter);
+            if self.contains_to_ignore_case(guessed_letter) {
+                self.correct_guesses.push(guessed_letter);
+            }
+            else {
+                self.wrong_guesses.push(guessed_letter);
                 self.lives -= 1;
                 println!("Wrong guess! You lost a life.");
             }
@@ -57,9 +62,41 @@ impl HangmanGame {
 
     fn display_word(&self) {
         for c in self.current_word.chars() {
+            let small_c = c.to_ascii_lowercase();
+            if self.contains_to_ignore_case(small_c) {
+                print!("{c} ");
+            } else {
+                print!("_ ");
+            }
+        }
+        println!();
+    }
+
+    fn print_guessed_letters(&self) {
+        print!("Guessed letters: ");
+        // print guessed letters in alphabetical order
+        let mut guessed_letters = self.guessed_letters.clone();
+        guessed_letters.sort();
+        for c in guessed_letters {
             print!("{c} ");
         }
         println!();
+    }
+
+    fn word_is_guessed(&self) -> bool {
+        for c in self.current_word.chars() {
+            if !self.guessed_letters.contains(&c) {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn contains_to_ignore_case(&self, c: char) -> bool {
+        let lowercase_word = self.current_word.to_lowercase();
+        let lowercase_char = c.to_ascii_lowercase();
+
+        lowercase_word.contains(lowercase_char) && self.guessed_letters.contains(&c)
     }
 
     fn get_guess(&mut self) -> char {
